@@ -1,0 +1,19 @@
+server {
+  listen 80 default_server;
+  
+  location / {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Port $server_port;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    add_header       Set-Cookie      'w_req_origin=$geo_offices;Path=/';
+    add_header       Cache-Control   'private, max-age=360' always;
+    root /usr/share/nginx/html;
+    try_files $uri ${TRY_FILES_CONFIG};
+  }
+
+  location /health {
+    stub_status;
+  }
+}
